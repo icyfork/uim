@@ -1,7 +1,7 @@
 tablesdir = $(pkgdatadir)/tables
 
-SCMS = wb86.scm zm.scm
-SCM_TABLES = wb86.table zm.table
+SCMS =
+SCM_TABLES =
 
 NATIVE_TABLES = 
 
