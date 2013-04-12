@@ -19,6 +19,7 @@ SCM_FILES = plugin.scm im.scm im-custom.scm lazy-load.scm init.scm \
  generic-predict.scm predict-custom.scm \
  viqr.scm \
  xtelex.scm \
+ xvni.scm \
  ipa-x-sampa.scm \
  m17nlib.scm m17nlib-custom.scm \
  uim-module-manager.scm \
@@ -45,7 +46,7 @@ EXTRA_DIST = $(OTHER_SCM_FILES)
 
 ETAGS_ARGS=$(SCM_FILES) $(GENERATED_SCM_FILES)
 
-module_names = "m17nlib" "viqr" "xtelex" "ipa-x-sampa"
+module_names = "m17nlib" "viqr" "xvni" "xtelex" "ipa-x-sampa"
 
 UIM_MODULE_MANAGER = $(top_builddir)/uim/uim-module-manager
 UIM_MODULE_MANAGER_ENV = \
