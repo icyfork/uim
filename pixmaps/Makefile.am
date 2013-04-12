@@ -30,7 +30,7 @@ IM_SUBST_SVGS = xvni.svg xtelex.svg viqr.svg ipa-x-sampa.svg scim.svg
 GENERATED_SVGS = $(IM_SUBST_SVGS)
 SVGS += im_subst.svg $(GENERATED_SVGS)
 
-IM_SUBST_PNGS = xvni.svg xtelex.png viqr.png ipa-x-sampa.png scim.png
+IM_SUBST_PNGS = xvni.png xtelex.png viqr.png ipa-x-sampa.png scim.png
 
 SVG_PNGS = unknown.png \
            direct.png \
