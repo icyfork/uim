@@ -25,12 +25,12 @@ SVGS += direct_input_dark_background.svg \
 SVGS += im_switcher.svg uim-dict.svg
 
 # input method substitutions
-IM_SUBST_SVGS = xtelex.svg viqr.svg ipa-x-sampa.svg scim.svg
+IM_SUBST_SVGS = xvni.svg xtelex.svg viqr.svg ipa-x-sampa.svg scim.svg
 
 GENERATED_SVGS = $(IM_SUBST_SVGS)
 SVGS += im_subst.svg $(GENERATED_SVGS)
 
-IM_SUBST_PNGS = xtelex.png viqr.png ipa-x-sampa.png scim.png
+IM_SUBST_PNGS = xvni.svg xtelex.png viqr.png ipa-x-sampa.png scim.png
 
 SVG_PNGS = unknown.png \
            direct.png \
