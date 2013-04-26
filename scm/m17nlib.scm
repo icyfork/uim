@@ -142,6 +142,7 @@
 	    (m17nlib-context-set-showing-candidate! mc #f)))
 
       (if (and
+     generic-use-candidate-window?
 	   (or
 	    candidates-changed?
 	    (and 
