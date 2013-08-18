@@ -109,6 +109,7 @@ static struct _CommandEntry command_entry[] = {
     UIM_FALSE
   },
 
+#ifdef UIM_VI_NO_CLEAN_UP
   {
     N_("Japanese dictionary editor"),
     NULL,
@@ -121,6 +122,7 @@ static struct _CommandEntry command_entry[] = {
     "toolbar-show-dict-button?",
     UIM_FALSE
   },
+#endif
 
   {
     N_("Input pad"),
@@ -135,6 +137,7 @@ static struct _CommandEntry command_entry[] = {
     UIM_FALSE
   },
 
+#ifdef UIM_VI_NO_CLEAN_UP
   {
     N_("Handwriting input pad"),
     "H",
@@ -147,6 +150,7 @@ static struct _CommandEntry command_entry[] = {
     "toolbar-show-handwriting-input-pad-button?",
     UIM_FALSE
   },
+#endif
 
   {
     N_("Help"),
