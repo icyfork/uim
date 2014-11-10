@@ -1,5 +1,5 @@
 byeorudatadir = $(pkgdatadir)/byeoru-data
 
-BYEORUDATA = byeoru-dict
+BYEORUDATA =
 
 dist_byeorudata_DATA = $(BYEORUDATA)

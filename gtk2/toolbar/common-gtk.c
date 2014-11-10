@@ -109,6 +109,7 @@ static struct _CommandEntry command_entry[] = {
     UIM_FALSE
   },
 
+#ifdef UIM_VI_NO_CLEAN_UP
   {
     N_("Japanese dictionary editor"),
     NULL,
@@ -121,6 +122,7 @@ static struct _CommandEntry command_entry[] = {
     "toolbar-show-dict-button?",
     UIM_FALSE
   },
+#endif
 
   {
     N_("Input pad"),
@@ -135,6 +137,7 @@ static struct _CommandEntry command_entry[] = {
     UIM_FALSE
   },
 
+#ifdef UIM_VI_NO_CLEAN_UP
   {
     N_("Handwriting input pad"),
     "H",
@@ -147,6 +150,7 @@ static struct _CommandEntry command_entry[] = {
     "toolbar-show-handwriting-input-pad-button?",
     UIM_FALSE
   },
+#endif
 
   {
     N_("Help"),
@@ -821,6 +825,10 @@ helper_toolbar_prop_list_update(GtkWidget *widget, gchar **lines)
 	indication_id = cols[1];
 	iconic_label  = safe_gettext(cols[2]);
 	tooltip_str   = safe_gettext(cols[3]);
+        if (strcmp("direct_input", indication_id)
+            && strcmp("on", indication_id)
+            && strcmp("off", indication_id))
+        {
 	button = prop_button_create(widget,
 				    indication_id, iconic_label, tooltip_str);
 	append_prop_button(widget, button);
@@ -829,6 +837,7 @@ helper_toolbar_prop_list_update(GtkWidget *widget, gchar **lines)
             || g_str_has_suffix(indication_id, "_direct"))) {
           is_hidden = TRUE;
         }
+        }
       } else if (!strcmp("leaf", cols[0]) && has_n_strs(cols, 7)) {
 	indication_id = cols[1];
 	iconic_label  = safe_gettext(cols[2]);
@@ -836,9 +845,14 @@ helper_toolbar_prop_list_update(GtkWidget *widget, gchar **lines)
 	tooltip_str   = safe_gettext(cols[4]);
 	action_id     = cols[5];
 	is_selected   = cols[6];
+        if (strcmp("direct_input", indication_id)
+            && strcmp("on", indication_id)
+            && strcmp("off", indication_id))
+        {
 	prop_button_append_menu(button,
 				indication_id, label, tooltip_str, action_id,
 				is_selected);
+      }
       }
       g_strfreev(cols);
     }
