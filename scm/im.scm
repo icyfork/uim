@@ -268,6 +268,7 @@
 ;; im-switch-im
 (define switch-im
   (lambda (uc name)
+    (invoke-handler im-focus-out-handler uc)
     (im-switch-im uc (next-im-for-switch-im name))))
 
 ;; FIXME: Input states are kept only if the state is appeared in the
@@ -278,6 +279,7 @@
 					(im-name (context-im c))
 					(context-current-widget-states c)))
 	   (saved-state (context-toggle-state c)))
+      (invoke-handler im-focus-out-handler uc)
       (im-switch-im uc (if saved-state
 			   (toggle-state-im-name saved-state)
 			   toggle-im-alt-im))
