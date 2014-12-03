@@ -310,7 +310,7 @@ bool QUimInputContext::filterEvent( const QEvent *event )
             // Qt4 seems to add its own modifier even the event is
             // KeyPress, which differs from ordinary model.  So remove
             // them for uim.
-            case Qt::Key_Shift: key = UKey_Shift_key; 
+            case Qt::Key_Shift: key = UKey_Shift_key;
                 if ( type == QEvent::KeyPress )
                     modifier &= ~UMod_Shift;
                 break;
@@ -413,6 +413,10 @@ void QUimInputContext::unsetFocus()
     qDebug( "QUimInputContext: %p->unsetFocus(), focusWidget()=%p",
             this, QApplication::focusWidget() );
 #endif
+
+    if ( ! QApplication::focusWidget() ) {
+      return;
+    }
 
     uim_focus_out_context( m_uc );
 
@@ -841,7 +845,7 @@ QList<QInputMethodEvent::Attribute> QUimInputContext::getPreeditAttrs()
                 color = getUserDefinedColor( "separator-background" );
                 if ( color.isValid() )
                     segFmt.setBackground( color );
-    
+
             }
         }
 
