@@ -79,7 +79,9 @@ QUimPlatformInputContext::QUimPlatformInputContext(const char *imname)
     if (imname)
         m_uc = createUimContext(imname);
 
+#ifdef QT5_CANDWIN
     createCandidateWindow();
+#endif
 
     m_textUtil = new QUimTextUtil(this);
 
@@ -96,7 +98,10 @@ QUimPlatformInputContext::~QUimPlatformInputContext()
 
     if (m_uc)
         uim_release_context(m_uc);
+
+#ifdef QT5_CANDWIN
     delete proxy;
+#endif
 
     if (focusedInputContext == this) {
         focusedInputContext = 0;
@@ -151,12 +156,14 @@ uim_context QUimPlatformInputContext::createUimContext(const char *imname)
     return uc;
 }
 
+#ifdef QT5_CANDWIN
 void QUimPlatformInputContext::createCandidateWindow()
 {
     proxy = new CandidateWindowProxy;
     proxy->setQUimPlatformInputContext(this);
     proxy->hide();
 }
+#endif
 
 void QUimPlatformInputContext::setFocus()
 {
@@ -168,8 +175,10 @@ void QUimPlatformInputContext::setFocus()
     focusedInputContext = this;
     disableFocusedContext = false;
 
+#ifdef QT5_CANDWIN
     if (candwinIsActive)
         proxy->popup();
+#endif
 
     m_helperManager->checkHelperConnection();
 
@@ -192,7 +201,9 @@ void QUimPlatformInputContext::unsetFocus()
 
     uim_focus_out_context(m_uc);
 
+#ifdef QT5_CANDWIN
     proxy->hide();
+#endif
 
     m_helperManager->checkHelperConnection();
 
@@ -446,9 +457,12 @@ void QUimPlatformInputContext::reset()
 #ifdef ENABLE_DEBUG
     qDebug("reset()");
 #endif
-    candwinIsActive = false;
 
+#ifdef QT5_CANDWIN
+    candwinIsActive = false;
     proxy->hide();
+#endif
+
     uim_reset_context(m_uc);
     clearPreedit();
     updatePreedit();
@@ -479,7 +493,9 @@ void QUimPlatformInputContext::update()
     if (w) {
         QRect mf = w->inputMethodQuery(Qt::ImMicroFocus).toRect();
         QPoint p = w->mapToGlobal(mf.topLeft());
+#ifdef QT5_CANDWIN
         proxy->layoutWindow(p.x(), p.y(), mf.height());
+#endif
     }
 }
 
@@ -537,43 +553,48 @@ void QUimPlatformInputContext::update_cb(void *ptr)
 
 void QUimPlatformInputContext::cand_activate_cb(void *ptr, int nr, int displayLimit)
 {
+#ifdef QT5_CANDWIN
 #ifdef ENABLE_DEBUG
     qDebug("cand_activate_cb");
 #endif
-
     QUimPlatformInputContext *ic = static_cast<QUimPlatformInputContext*>(ptr);
     ic->proxy->candidateActivate(nr, displayLimit);
+#endif
 }
 
 void QUimPlatformInputContext::cand_select_cb(void *ptr, int index)
 {
+#ifdef QT5_CANDWIN
 #ifdef ENABLE_DEBUG
     qDebug("cand_select_cb");
 #endif
-
     QUimPlatformInputContext *ic = static_cast<QUimPlatformInputContext*>(ptr);
     ic->proxy->candidateSelect(index);
+#endif
 }
 
 void QUimPlatformInputContext::cand_shift_page_cb(void *ptr, int forward)
 {
+#ifdef QT5_CANDWIN
 #ifdef ENABLE_DEBUG
     qDebug("cand_shift_page_cb");
 #endif
 
     QUimPlatformInputContext *ic = static_cast<QUimPlatformInputContext*>(ptr);
     ic->proxy->candidateShiftPage(forward);
+#endif
 }
 
 void QUimPlatformInputContext::cand_deactivate_cb(void *ptr)
 {
+#ifdef QT5_CANDWIN
 #ifdef ENABLE_DEBUG
     qDebug("cand_deactivate_cb");
 #endif
-
     QUimPlatformInputContext *ic = static_cast<QUimPlatformInputContext*>(ptr);
     ic->proxy->deactivateCandwin();
     ic->candwinIsActive = false;
+#endif
 }
 
 void QUimPlatformInputContext::switch_app_global_im_cb(void *ptr,
@@ -593,8 +614,10 @@ void QUimPlatformInputContext::switch_system_global_im_cb(void *ptr,
 #if UIM_QT_USE_DELAY
 void QUimPlatformInputContext::cand_activate_with_delay_cb(void *ptr, int delay)
 {
+#ifdef QT5_CANDWIN
     QUimPlatformInputContext *ic = static_cast<QUimPlatformInputContext*>(ptr);
     ic->proxy->candidateActivateWithDelay(delay);
+#endif
 }
 #endif /* !UIM_QT_USE_DELAY */
 
@@ -670,8 +693,10 @@ QString QUimPlatformInputContext::getPreeditString()
 
 int QUimPlatformInputContext::getPreeditCursorPosition()
 {
+#ifdef QT5_CANDWIN
     if (proxy->isAlwaysLeftPosition())
         return 0;
+#endif
 
     int cursorPos = 0;
     for (int i = 0, j = preeditSegments.count(); i < j; i++) {
@@ -787,12 +812,15 @@ void QUimPlatformInputContext::switch_system_global_im(const char *name)
 void QUimPlatformInputContext::updatePosition()
 {
     char * leftp = uim_scm_symbol_value_str("candidate-window-position");
+#ifdef QT5_CANDWIN
     proxy->setAlwaysLeftPosition(leftp && !strcmp(leftp, "left"));
+#endif
     free(leftp);
 }
 
 void QUimPlatformInputContext::updateStyle()
 {
+#ifdef QT5_CANDWIN
     // don't update window style if deprecated uim-candwin-prog is set
     char *candwinprog = uim_scm_symbol_value_str("uim-candwin-prog");
     if (candwinprog) {
@@ -801,6 +829,7 @@ void QUimPlatformInputContext::updateStyle()
     }
     delete proxy;
     createCandidateWindow();
+#endif
 }
 
 void QUimPlatformInputContext::updateIndicator(const QString &str)
