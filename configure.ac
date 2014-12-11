@@ -1859,6 +1859,7 @@ if test "x$with_qt4_immodule" = xyes; then
     qt4_qt3support_option="QT+=qt3support DEFINES+=ENABLE_QT4_QT3SUPPORT"
   fi
   ${QMAKE4} -o ${ac_abs_top_builddir}/qt4/immodule/Makefile.qmake \
+    ${qt4_immodule_option} \
     ${qt4_qt3support_option} \
     ${ac_abs_top_builddir}/qt4/immodule/quiminputcontextplugin.pro
   ${QMAKE4} -o ${ac_abs_top_builddir}/qt4/edittest/Makefile.qmake \
@@ -1899,6 +1900,7 @@ fi
 
 if test "x$with_qt5_immodule" = xyes; then
   ${QMAKE5} -o ${ac_abs_top_builddir}/qt5/immodule/Makefile.qmake \
+    ${qt5_immodule_option} \
     ${ac_abs_top_builddir}/qt5/immodule/quimplatforminputcontextplugin.pro
   ${QMAKE5} -o ${ac_abs_top_builddir}/qt5/edittest/Makefile.qmake \
     ${ac_abs_top_srcdir}/qt4/edittest/edittest.pro
