@@ -97,7 +97,9 @@ QUimInputContext::QUimInputContext( const char *imname )
     if ( imname )
         m_uc = createUimContext( imname );
 
+#ifdef QT4_CANDWIN
     createCandidateWindow();
+#endif
 
 #ifdef Q_WS_X11
     if ( !mTreeTop )
@@ -122,13 +124,19 @@ QUimInputContext::~QUimInputContext()
 
     if ( m_uc )
         uim_release_context( m_uc );
+
+#ifdef QT4_CANDWIN
     delete proxy;
+#endif
+
 #ifdef WORKAROUND_BROKEN_RESET_IN_QT4
     foreach ( const uim_context uc, m_ucHash )
         if ( uc )
             uim_release_context( uc );
+#ifdef QT4_CANDWIN
     foreach ( const CandidateWindowProxy* window, proxyHash )
         delete window;
+#endif
 #endif
 
     if ( this == focusedInputContext )
@@ -163,7 +171,6 @@ uim_context QUimInputContext::createUimContext( const char *imname )
                                    QUimInputContext::cand_shift_page_cb,
                                    QUimInputContext::cand_deactivate_cb );
 
-
     uim_set_prop_list_update_cb( uc, QUimHelperManager::update_prop_list_cb );
     uim_set_prop_label_update_cb( uc, QUimHelperManager::update_prop_label_cb );
 
@@ -185,12 +192,14 @@ uim_context QUimInputContext::createUimContext( const char *imname )
     return uc;
 }
 
+#ifdef QT4_CANDWIN
 void QUimInputContext::createCandidateWindow()
 {
     proxy = new CandidateWindowProxy;
     proxy->setQUimInputContext( this );
     proxy->hide();
 }
+#endif
 
 #ifdef Q_WS_X11
 bool QUimInputContext::x11FilterEvent( QWidget *keywidget, XEvent *event )
@@ -395,8 +404,11 @@ void QUimInputContext::setFocus()
         restorePreedit();
     else
 #endif
+
+#ifdef QT4_CANDWIN
     if ( candwinIsActive )
         proxy->popup();
+#endif
 
     m_HelperManager->checkHelperConnection();
 
@@ -417,10 +429,12 @@ void QUimInputContext::unsetFocus()
     if ( ! QApplication::focusWidget() ) {
       return;
     }
-
     uim_focus_out_context( m_uc );
 
+#ifdef QT4_CANDWIN
     proxy->hide();
+#endif
+
     m_indicator->hide();
 
     m_HelperManager->checkHelperConnection();
@@ -468,11 +482,21 @@ void QUimInputContext::reset()
     // until focused again.
     if ( isPreeditPreservationEnabled()
             && !m_ucHash.contains( focusedWidget ) ) {
+#ifdef QT4_CANDWIN
+        if (! psegs.isEmpty()) {
+          savePreedit();
+        }
+#else
         psegs.isEmpty() ? proxy->hide() : savePreedit();
+#endif
         return;
     }
 #endif
+
+#ifdef QT4_CANDWIN
     proxy->hide();
+#endif
+
     uim_reset_context( m_uc );
 #ifdef Q_WS_X11
     mCompose->reset();
@@ -492,7 +516,9 @@ void QUimInputContext::update()
     if ( w ) {
         QRect mf = w->inputMethodQuery( Qt::ImMicroFocus ).toRect();
         QPoint p = w->mapToGlobal( mf.topLeft() );
+#ifdef QT4_CANDWIN
         proxy->layoutWindow( p.x(), p.y(), mf.height() );
+#endif
         m_indicator->move( w->mapToGlobal( mf.bottomLeft() )
             + QPoint( 0, CaretStateIndicator::SPACING ) );
     }
@@ -564,43 +590,48 @@ void QUimInputContext::update_cb( void *ptr )
 
 void QUimInputContext::cand_activate_cb( void *ptr, int nr, int displayLimit )
 {
+#ifdef QT4_CANDWIN
 #ifdef ENABLE_DEBUG
     qDebug( "cand_activate_cb" );
 #endif
-
     QUimInputContext *ic = static_cast<QUimInputContext*>( ptr );
     ic->proxy->candidateActivate( nr, displayLimit );
+#endif
 }
 
 void QUimInputContext::cand_select_cb( void *ptr, int index )
 {
+#ifdef QT4_CANDWIN
 #ifdef ENABLE_DEBUG
     qDebug( "cand_select_cb" );
 #endif
-
     QUimInputContext *ic = static_cast<QUimInputContext*>( ptr );
     ic->proxy->candidateSelect( index );
+#endif
 }
 
 void QUimInputContext::cand_shift_page_cb( void *ptr, int forward )
 {
+#ifdef QT4_CANDWIN
 #ifdef ENABLE_DEBUG
     qDebug( "cand_shift_page_cb" );
 #endif
 
     QUimInputContext *ic = static_cast<QUimInputContext*>( ptr );
     ic->proxy->candidateShiftPage( forward );
+#endif
 }
 
 void QUimInputContext::cand_deactivate_cb( void *ptr )
 {
+#ifdef QT4_CANDWIN
 #ifdef ENABLE_DEBUG
     qDebug( "cand_deactivate_cb" );
 #endif
-
     QUimInputContext *ic = static_cast<QUimInputContext*>( ptr );
     ic->proxy->deactivateCandwin();
     ic->candwinIsActive = false;
+#endif
 }
 
 void QUimInputContext::switch_app_global_im_cb( void *ptr, const char *name )
@@ -618,8 +649,10 @@ void QUimInputContext::switch_system_global_im_cb( void *ptr, const char *name )
 #if UIM_QT_USE_DELAY
 void QUimInputContext::cand_activate_with_delay_cb( void *ptr, int delay )
 {
+#ifdef QT4_CANDWIN
     QUimInputContext *ic = static_cast<QUimInputContext*>( ptr );
     ic->proxy->candidateActivateWithDelay( delay );
+#endif
 }
 #endif /* !UIM_QT_USE_DELAY */
 
@@ -671,15 +704,18 @@ void QUimInputContext::savePreedit()
 {
     m_ucHash.insert( focusedWidget, m_uc );
     psegsHash.insert( focusedWidget, psegs );
+#ifdef QT4_CANDWIN
     proxyHash.insert( focusedWidget, proxy );
     visibleHash.insert( focusedWidget, proxy->isVisible() );
     proxy->hide();
-
+#endif
     const char *imname = uim_get_current_im_name( m_uc );
     if ( imname )
         m_uc = createUimContext( imname );
     psegs.clear();
+#ifdef QT4_CANDWIN
     createCandidateWindow();
+#endif
 }
 
 void QUimInputContext::restorePreedit()
@@ -702,12 +738,16 @@ void QUimInputContext::restorePreedit()
     }
     if ( m_uc )
         uim_release_context( m_uc );
+#ifdef QT4_CANDWIN
     delete proxy;
+#endif
     m_uc = m_ucHash.take( focusedWidget );
     psegs = psegsHash.take( focusedWidget );
+#ifdef QT4_CANDWIN
     proxy = window;
     if ( visibleHash.take( focusedWidget ) )
         proxy->popup();
+#endif
 }
 #endif
 
@@ -751,8 +791,10 @@ QString QUimInputContext::getPreeditString()
 
 int QUimInputContext::getPreeditCursorPosition()
 {
+#ifdef QT4_CANDWIN
     if ( proxy->isAlwaysLeftPosition() )
         return 0;
+#endif
 
     int cursorPos = 0;
     QList<PreeditSegment>::ConstIterator seg = psegs.begin();
@@ -913,13 +955,16 @@ void QUimInputContext::switch_system_global_im( const char *name )
 
 void QUimInputContext::updatePosition()
 {
+#ifdef QT4_CANDWIN
     char * leftp = uim_scm_symbol_value_str( "candidate-window-position" );
     proxy->setAlwaysLeftPosition( leftp && !strcmp( leftp, "left" ) );
     free( leftp );
+#endif
 }
 
 void QUimInputContext::updateStyle()
 {
+#ifdef QT4_CANDWIN
     // don't update window style if deprecated uim-candwin-prog is set
     char *candwinprog = uim_scm_symbol_value_str( "uim-candwin-prog" );
     if ( candwinprog ) {
@@ -928,6 +973,8 @@ void QUimInputContext::updateStyle()
     }
     delete proxy;
     createCandidateWindow();
+#endif
+
 #ifdef WORKAROUND_BROKEN_RESET_IN_QT4
     // invalidate all the candidate windows stored in proxyHash
     QHashIterator<QWidget*, CandidateWindowProxy*> i( proxyHash );
