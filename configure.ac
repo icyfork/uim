@@ -1882,7 +1882,7 @@ if test "x$with_qt5" = xyes; then
     qt5_immodule_option="DEFINES+=QT5_IMMODULE"
   fi
 
-  qt5_immodule_option="DEFINES+=QT5_CANDWIN"
+  qt5_immodule_option="${qt5_immodule_option} DEFINES+=QT5_CANDWIN"
 
   ${QMAKE5} -o ${ac_abs_top_builddir}/qt5/candwin/Makefile.qmake \
     ${ac_abs_top_builddir}/qt5/candwin/uim-candwin-qt5.pro
