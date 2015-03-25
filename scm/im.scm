@@ -300,7 +300,6 @@
     ;;     total_hours_of_viber_crashes = 96
     ;;     total_hours_of_firefox_crashes = 96
     ;;     total_hours_of_texmaker_crashes = 96
-    ;;     total_hours_of_texmaker_crashes = 96
     ;;
     (invoke-handler im-focus-out-handler uc)
     (im-switch-im uc (next-im-for-switch-im name))))
