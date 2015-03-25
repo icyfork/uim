@@ -291,7 +291,7 @@
     ;;
     ;; NB:
     ;;
-    ;;  When I was writing these comments, I did't believe that
+    ;;  When I was writing these comments, I didn't believe that
     ;;  I or God would read them again. So if you are trying to
     ;;  optimize the routine, by implementing some amazing fast
     ;;  algorithm, please increase the following counters
