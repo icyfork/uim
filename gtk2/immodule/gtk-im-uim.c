@@ -413,7 +413,7 @@ on_client_widget_grab_notify(GtkWidget *widget, gboolean was_grabbed, IMUIMConte
       if (cur_toplevel && GTK_IS_WINDOW(cur_toplevel)) {
         GtkWindowGroup *group;
         GtkWindow *window;
-	
+
         window = GTK_WINDOW(cur_toplevel);
         group = gtk_window_get_group(window);
 #if GTK_CHECK_VERSION(2, 22, 0)
@@ -760,7 +760,7 @@ free_candidates(GSList *candidates)
   g_slist_free(candidates);
 }
 #endif /* IM_UIM_USE_NEW_PAGE_HANDLING */
- 
+
 static void
 cand_activate_cb(void *ptr, int nr, int display_limit)
 {
@@ -1436,6 +1436,13 @@ im_uim_focus_out(GtkIMContext *ic)
 {
   IMUIMContext *uic = IM_UIM_CONTEXT(ic);
 
+  /*
+    Fix bug https://github.com/TheSLinux/gs/issues/151
+  */
+  if (! gtk_widget_has_focus(GTK_WIDGET(uic->cwin))) {
+    return ;
+  }
+
 #if IM_UIM_USE_SNOOPER
   if (snooper_installed == TRUE) {
     gtk_key_snooper_remove(snooper_id);
@@ -1467,7 +1474,12 @@ im_uim_reset(GtkIMContext *ic)
   update_cb(uic);
 #else
   if (uic == focused_context) {
-    uim_focus_out_context(uic->uc);
+    /*
+      Fix bug https://github.com/TheSLinux/gs/issues/151
+    */
+    if (gtk_widget_has_focus(GTK_WIDGET(uic->cwin))) {
+      uim_focus_out_context(uic->uc);
+    }
     uim_focus_in_context(uic->uc);
   } else {
     uim_reset_context(uic->uc);
