@@ -268,6 +268,40 @@
 ;; im-switch-im
 (define switch-im
   (lambda (uc name)
+    ;;
+    ;; Comments by Anh K. Huynh on March 26th 2015.
+    ;;
+    ;; See also 03e788afa5f32cada7f64f0d1d6fa3383d9bf561
+    ;;
+    ;; The first (im-focus-out-handler) call will make the current
+    ;; wideget out-of-focus, hence the (followed) (im-focus-out-handler)
+    ;; just make the application crashed.
+    ;;
+    ;; IMHO, (switch-im) should be as same as (im-focus-out-handler),
+    ;; except that, during (switch-im) process, the focus is not updated.
+    ;; That means, unless we create a new kind of handler,
+    ;; ({before,after}-switch-im-handler), we need to rely on
+    ;; (im-focus-out-handler).
+    ;;
+    ;; Another transparent way, is to invoke (im-focus-in-handler)
+    ;; immediately after (im-focus-out-handler), that will hold
+    ;; _enough reference for the current widget_. However, from a programmer
+    ;; point of view, it's not a good idead to  something on a widget
+    ;; without checking if that widget is available.
+    ;;
+    ;; NB:
+    ;;
+    ;;  When I was writing these comments, I don't believe that
+    ;;  I or God would read them again. So if you are trying to
+    ;;  optimize the routine, by implementing some amazing fast
+    ;;  algorithm, please increase the following counters
+    ;;
+    ;;     total_hours_of_skype_crashes = 96
+    ;;     total_hours_of_viber_crashes = 96
+    ;;     total_hours_of_firefox_crashes = 96
+    ;;     total_hours_of_texmaker_crashes = 96
+    ;;     total_hours_of_texmaker_crashes = 96
+    ;;
     (invoke-handler im-focus-out-handler uc)
     (im-switch-im uc (next-im-for-switch-im name))))
 
@@ -279,6 +313,8 @@
 					(im-name (context-im c))
 					(context-current-widget-states c)))
 	   (saved-state (context-toggle-state c)))
+      ;; See also 03e788afa5f32cada7f64f0d1d6fa3383d9bf561
+      ;; and comments from (switch-im) method.
       (invoke-handler im-focus-out-handler uc)
       (im-switch-im uc (if saved-state
 			   (toggle-state-im-name saved-state)
