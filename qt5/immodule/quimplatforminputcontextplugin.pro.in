@@ -38,5 +38,10 @@ SOURCES += @srcdir@/quimplatforminputcontext.cpp \
 OTHER_FILES += uim.json
 
 TARGET = uimplatforminputcontextplugin
-DESTDIR = 
+
+# The following is a work-around. Unlike the qt4-version, this variable
+# is /usr/plugins/ here for some unknown reason. That will break the
+# installation process because some path doesn't exist.
+DESTDIR =
+
 target.path += @DESTDIR@$$[QT_INSTALL_PLUGINS]/platforminputcontexts
