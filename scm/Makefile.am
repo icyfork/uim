@@ -41,7 +41,7 @@ SCM_FILES = plugin.scm im.scm im-custom.scm lazy-load.scm init.scm \
  dict-socket.scm
 
 if ANTHY_UTF8
-SCM_FILES +=
+SCM_FILES += \
   anthy-key-custom.scm \
   anthy-utf8.scm anthy-utf8-custom.scm
 endif
