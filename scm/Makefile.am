@@ -40,6 +40,12 @@ SCM_FILES = plugin.scm im.scm im-custom.scm lazy-load.scm init.scm \
  ct.scm \
  dict-socket.scm
 
+if ANTHY_UTF8
+SCM_FILES +=
+  anthy-key-custom.scm \
+  anthy-utf8.scm anthy-utf8-custom.scm
+endif
+
 OTHER_SCM_FILES = \
  macro-expander.scm macro-expander-chicken.scm \
  json-parser-expander.scm json.scm.in packrat.scm.in
@@ -49,6 +55,10 @@ EXTRA_DIST = $(OTHER_SCM_FILES)
 ETAGS_ARGS=$(SCM_FILES) $(GENERATED_SCM_FILES)
 
 module_names = "m17nlib" "viqr" "xvni" "xtelex" "ipa-x-sampa" "xtelex-ipa" "xvni-ipa"
+
+if ANTHY_UTF8
+module_names += "anthy-utf8"
+endif
 
 UIM_MODULE_MANAGER = $(top_builddir)/uim/uim-module-manager
 UIM_MODULE_MANAGER_ENV = \
