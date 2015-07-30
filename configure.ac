@@ -337,6 +337,8 @@ XftDrawStringUtf8(0, 0, 0, 0, 0, 0, 0); return 0;
   fi
 fi
 
+AC_XKB
+
 AM_CONDITIONAL(XIM, test x"$use_xim" = xyes)
 AM_CONDITIONAL(WITH_XFT, test x"$XFT" = xtrue)
 
@@ -853,7 +855,7 @@ AC_ARG_ENABLE(gnome3-applet,
   [enable_gnome3_applet=yes])
 
 if test "x$enable_gnome3_applet" != xno; then
-  PKG_CHECK_MODULES(GNOME3_APPLET, libpanelapplet-4.0,
+  PKG_CHECK_MODULES(GNOME3_APPLET, libpanel-applet,
                     enable_gnome3_applet=yes, enable_gnome3_applet=no)
 fi
 
